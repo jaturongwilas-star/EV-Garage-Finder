@@ -93,7 +93,7 @@
   //   ต่อให้หลุดไปความเสียหายก็จำกัดวงแคบกว่ามาก และสามารถเปลี่ยน API_KEY
   //   ใหม่ได้ทันทีจาก Apps Script Script Properties โดยไม่กระทบส่วนอื่น
   // ---------------------------------------------------------------
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzUlQkPY8Cvon3a1i436IjzBbE7fZMk3G7Q_1Jg6Ci7jgKzhyR3JRgyBQ8fxkeDc2Of/exec";
 
   // Thai (and English) header → internal field map. Matched after trimming.
   const HEADER_MAP = {
