@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EV Garage Finder — ค้นหาอู่ซ่อมรถยนต์ไฟฟ้าทั่วไทย</title>
+<meta name="description" content="ค้นหาอู่ซ่อมและศูนย์บริการรถยนต์ไฟฟ้า (EV) ทั่วประเทศไทย กรองตามจังหวัด ยี่ห้อรถ และงานที่รับซ่อม">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+Thai:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="#top" class="brand">
+      <svg class="brand-mark" width="30" height="30" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1" width="38" height="38" rx="9" stroke="#263455" stroke-width="1.5"/>
+        <path d="M22 8L11 22h7l-2 10 11-14h-7l2-10z" fill="#C6F135"/>
+      </svg>
+      <span class="brand-text">
+        <span class="brand-title">EV Garage <span>Finder</span></span>
+        <span class="brand-sub">ระบบค้นหาอู่ซ่อมรถไฟฟ้า</span>
+      </span>
+    </a>
+    <div class="header-actions">
+      <div class="header-stat">
+        <span class="pulse-dot" aria-hidden="true"></span>
+        <span id="header-total-count">— รายการในฐานข้อมูล</span>
+      </div>
+      <button type="button" class="btn-upload-header" id="btn-open-upload">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15v-4a4 4 0 1 1 8 0v4"/><rect x="6" y="11" width="12" height="8" rx="1.5"/></svg>
+        จัดการข้อมูล (แอดมิน)
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="upload-overlay" id="admin-login-overlay" hidden>
+  <div class="upload-panel login-panel" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <div class="upload-panel-head">
+      <h2 id="login-title">เข้าสู่ระบบแอดมิน</h2>
+      <button type="button" class="btn-icon" id="btn-close-login" aria-label="ปิด">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <p class="upload-desc">การเพิ่ม/แก้ไขฐานข้อมูลอู่สงวนไว้สำหรับแอดมินเท่านั้น กรุณากรอกชื่อผู้ใช้และรหัสผ่านเพื่อดำเนินการต่อ</p>
+
+    <form id="admin-login-form">
+      <label class="login-field-label" for="admin-username">ชื่อผู้ใช้แอดมิน</label>
+      <input class="login-input" type="text" id="admin-username" autocomplete="username" placeholder="username">
+      <label class="login-field-label" for="admin-password">รหัสผ่านแอดมิน</label>
+      <input class="login-input" type="password" id="admin-password" autocomplete="current-password" placeholder="••••••••">
+      <div class="login-error" id="login-error" aria-live="polite"></div>
+      <button type="submit" class="link-btn primary login-submit">เข้าสู่ระบบ</button>
+    </form>
+  </div>
+</div>
+
+<div class="upload-overlay" id="upload-overlay" hidden>
+  <div class="upload-panel" role="dialog" aria-modal="true" aria-labelledby="upload-title">
+    <div class="upload-panel-head">
+      <h2 id="upload-title">อัปโหลดข้อมูลอู่จาก Excel</h2>
+      <button type="button" class="btn-icon" id="btn-close-upload" aria-label="ปิด">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <p class="upload-desc">อัปโหลดไฟล์ .xlsx / .xls / .csv ตามรูปแบบ Template — ระบบจะอ่านหัวคอลัมน์ภาษาไทยอัตโนมัติ (ประเภทรถ EV และ งานที่รับซ่อม คั่นหลายค่าด้วยจุลภาค) แล้วบันทึกขึ้น Google Sheet โดยตรง ให้ทุกคนเห็นข้อมูลเดียวกัน</p>
+
+    <div class="gh-token-field">
+      <label class="login-field-label" for="apps-script-key-input">API Key (สำหรับบันทึกขึ้น Google Sheet จริง)</label>
+      <input class="login-input" type="password" id="apps-script-key-input" autocomplete="off" placeholder="ใส่ API Key ที่ตั้งไว้ใน Apps Script Script Properties">
+      <p class="gh-token-hint">
+        Key นี้ถูกเก็บไว้ในหน่วยความจำชั่วคราวของเบราว์เซอร์ (sessionStorage) เท่านั้น — หายไปเองเมื่อปิดแท็บหรือกด "ออกจากระบบแอดมิน" ไม่ถูกบันทึกลงไฟล์ใดๆ ทั้งสิ้น<br>
+        Key นี้ตั้งค่าไว้ที่ Google Apps Script (Script Properties &gt; API_KEY) ไม่ได้อยู่ในโค้ดเว็บนี้เลย ดูวิธีตั้งค่าได้ที่ไฟล์ <code>apps-script/Code.gs</code> หรือ README
+      </p>
+    </div>
+
+    <button type="button" class="link-btn template-btn" id="btn-download-template">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M12 15l-4-4M12 15l4-4"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+      ดาวน์โหลด Template Excel
+    </button>
+
+    <label class="dropzone" id="dropzone" for="file-input">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+      <span class="dropzone-title">ลากไฟล์มาวางที่นี่ หรือแตะเพื่อเลือกไฟล์</span>
+      <span class="dropzone-sub">รองรับ .xlsx .xls .csv</span>
+      <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden>
+    </label>
+
+    <div class="upload-mode">
+      <span class="upload-mode-label">โหมดอัปโหลด</span>
+      <label class="radio-pill"><input type="radio" name="upload-mode" value="merge" checked> เพิ่ม/อัปเดตต่อจากเดิม</label>
+      <label class="radio-pill"><input type="radio" name="upload-mode" value="replace"> แทนที่ข้อมูลทั้งหมด</label>
+    </div>
+
+    <div class="upload-status" id="upload-status" aria-live="polite"></div>
+
+    <div class="upload-panel-foot">
+      <button type="button" class="btn-text-danger" id="btn-reset-data">รีเซ็ตเป็นข้อมูลเริ่มต้น</button>
+      <button type="button" class="btn-text-muted" id="btn-admin-logout">ออกจากระบบแอดมิน</button>
+    </div>
+  </div>
+</div>
+
+<div class="upload-overlay" id="qr-overlay" hidden>
+  <div class="upload-panel qr-panel" role="dialog" aria-modal="true" aria-labelledby="qr-title">
+    <div class="upload-panel-head">
+      <h2 id="qr-title">QR Code อู่</h2>
+      <button type="button" class="btn-icon" id="btn-close-qr" aria-label="ปิด">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <p class="upload-desc" id="qr-desc">พิมพ์แล้วนำไปติดที่หน้าร้าน — ลูกค้าสแกนแล้วเปิดแผนที่ไปยังอู่นี้ได้ทันที</p>
+
+    <p class="qr-garage-name" id="qr-garage-name"></p>
+
+    <div class="qr-tabs" id="qr-tabs">
+      <button type="button" class="qr-tab active" data-qr-type="maps">📍 QR แผนที่</button>
+      <button type="button" class="qr-tab" data-qr-type="line">💬 QR LINE</button>
+    </div>
+
+    <div class="qr-code-box" id="qr-code-box"></div>
+
+    <p class="qr-url" id="qr-url"></p>
+
+    <div class="qr-actions">
+      <button type="button" class="link-btn primary" id="btn-download-qr">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M12 15l-4-4M12 15l4-4"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+        ดาวน์โหลด QR Code (PNG)
+      </button>
+    </div>
+  </div>
+</div>
+
+<main id="top">
+  <section class="hero">
+    <div class="container trace-wrap">
+      <svg class="trace-svg" viewBox="0 0 1140 260" preserveAspectRatio="none" aria-hidden="true">
+        <path class="live" d="M0 40 H260 Q280 40 280 60 V90"/>
+        <path d="M0 90 H180 Q200 90 200 110 V150"/>
+        <path class="live" d="M1140 30 H820 Q800 30 800 50 V90"/>
+        <path d="M1140 110 H960 Q940 110 940 130 V160"/>
+      </svg>
+
+      <p class="hero-eyebrow">Thailand · EV Aftersales Directory</p>
+      <h1>ค้นหาอู่ซ่อม<span class="accent">รถยนต์ไฟฟ้า</span>ที่ไว้ใจได้ ใกล้คุณ</h1>
+      <p>รวมอู่และศูนย์บริการที่รับซ่อมรถ EV โดยเฉพาะ — กรองตามจังหวัด ยี่ห้อรถ และงานที่รับซ่อม เช่น แบตเตอรี่แรงดันสูง ระบบชาร์จ และระบบปรับอากาศ</p>
+
+      <div class="search-panel">
+        <div class="search-row">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="search" id="search-input" placeholder="ค้นหาชื่ออู่ จังหวัด อำเภอ หรือยี่ห้อรถ...">
+          <button class="btn-clear-search" id="btn-reset" type="button">ล้างตัวกรองทั้งหมด</button>
+        </div>
+
+        <div class="filter-grid">
+          <div class="filter-field">
+            <label for="filter-province">จังหวัด</label>
+            <select id="filter-province">
+              <option value="">ทุกจังหวัด</option>
+            </select>
+          </div>
+          <div class="filter-field">
+            <label for="filter-district">อำเภอ/เขต</label>
+            <select id="filter-district">
+              <option value="">ทุกอำเภอ/เขต</option>
+            </select>
+          </div>
+          <div class="filter-field">
+            <label for="filter-evtype">ประเภทรถ EV</label>
+            <select id="filter-evtype">
+              <option value="">ทุกยี่ห้อ</option>
+            </select>
+          </div>
+          <div class="filter-field">
+            <label for="filter-service">งานที่รับซ่อม</label>
+            <select id="filter-service">
+              <option value="">ทุกประเภทงาน</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="chip-row" id="quick-chips" aria-label="ตัวกรองด่วนตามงานที่รับซ่อม"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="results-section">
+    <div class="container">
+      <div class="results-header">
+        <p class="results-count"><strong id="results-count">0</strong> อู่ที่ตรงกับเงื่อนไข</p>
+        <label class="sort-field">
+          เรียงตาม
+          <select id="sort-select">
+            <option value="name-asc">ชื่ออู่ (ก-ฮ)</option>
+            <option value="province-asc">จังหวัด (ก-ฮ)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="results-grid" id="results-grid" aria-live="polite"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>EV Garage Finder — การเพิ่ม/แก้ไขฐานข้อมูลสงวนสิทธิ์เฉพาะแอดมิน ผ่านปุ่ม "จัดการข้อมูล" ด้านบน</p>
+    <p>ข้อมูลที่แอดมินอัปโหลดจะถูกบันทึกลง Google Sheet บนเซิร์ฟเวอร์ ทุกคนที่เข้าเว็บจะเห็นข้อมูลชุดเดียวกัน</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
