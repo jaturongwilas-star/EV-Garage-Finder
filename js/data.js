@@ -1,0 +1,337 @@
+/**
+ * data.js
+ * ข้อมูลสำรอง (fallback) ใช้เมื่อไม่สามารถเชื่อมต่อ Google Apps Script Web App ได้
+ * เช่น เปิดไฟล์ index.html ตรงๆ แบบ file:// โดยไม่ผ่านเว็บเซิร์ฟเวอร์, ไม่มีอินเทอร์เน็ต,
+ * หรือยังไม่ได้ตั้งค่า APPS_SCRIPT_URL ในไฟล์ js/app.js
+ * ปกติแล้ว app.js จะโหลดข้อมูลจาก Google Sheet ผ่าน Apps Script Web App เสมอ
+ * (ดูวิธี deploy backend ที่ apps-script/Code.gs) — ไฟล์นี้เป็นแค่ชุดสำรองที่ฝังไว้ในโค้ด
+ * ไม่ได้อัปเดตอัตโนมัติตามฐานข้อมูลจริงบน Google Sheet
+ */
+window.EV_GARAGE_FALLBACK_DATA = [
+  {
+    "id": "PK-001",
+    "province": "นครราชสีมา",
+    "district": "เมืองนครราชสีมา",
+    "name": "P&K New Energy Service Center",
+    "evTypes": [
+      "BYD",
+      "NETA",
+      "MG",
+      "GAC AION",
+      "ทุกยี่ห้อ"
+    ],
+    "services": [
+      "แบตเตอรี่แรงดันสูง (HV Battery)",
+      "ระบบปรับอากาศ (HVAC)",
+      "ระบบชาร์จ/OBC",
+      "ระบบไฟฟ้า/ECU",
+      "ตรวจเช็คทั่วไป (PM)"
+    ],
+    "contact": "จตุรงค์",
+    "phone": "081-234-5678",
+    "line": "@pknewenergy",
+    "facebook": "https://facebook.com/pknewenergyservice",
+    "googleMaps": "https://maps.google.com/?q=P%26K+New+Energy+Service+Center+Nakhon+Ratchasima",
+    "hours": "จันทร์-เสาร์ 08:30-18:00",
+    "notes": "ศูนย์บริการเฉพาะทางรถยนต์ไฟฟ้า มีเครื่องมือวิเคราะห์แบตเตอรี่และรับตรวจเช็ค HV โดยเฉพาะ"
+  },
+  {
+    "id": "EV-002",
+    "province": "นครราชสีมา",
+    "district": "ปากช่อง",
+    "name": "ปากช่อง EV Care",
+    "evTypes": [
+      "BYD",
+      "MG",
+      "ทุกยี่ห้อ"
+    ],
+    "services": [
+      "ระบบปรับอากาศ (HVAC)",
+      "ตรวจเช็คทั่วไป (PM)",
+      "ช่วงล่าง/เบรก"
+    ],
+    "contact": "คุณอนันต์",
+    "phone": "089-112-2345",
+    "line": "@pakchongevcare",
+    "facebook": "https://facebook.com/pakchongevcare",
+    "googleMaps": "https://maps.google.com/?q=Pakchong+EV+Care",
+    "hours": "ทุกวัน 09:00-19:00",
+    "notes": "รับซ่อมด่วนระหว่างเดินทางสายอีสาน"
+  },
+  {
+    "id": "EV-003",
+    "province": "กรุงเทพมหานคร",
+    "district": "บางนา",
+    "name": "Bangna EV Motorworks",
+    "evTypes": [
+      "Tesla",
+      "BYD",
+      "NETA",
+      "ORA"
+    ],
+    "services": [
+      "แบตเตอรี่แรงดันสูง (HV Battery)",
+      "มอเตอร์/ระบบขับเคลื่อน",
+      "ระบบไฟฟ้า/ECU"
+    ],
+    "contact": "คุณวีระ",
+    "phone": "02-345-6789",
+    "line": "@bangnaev",
+    "facebook": "https://facebook.com/bangnaevmotorworks",
+    "googleMaps": "https://maps.google.com/?q=Bangna+EV+Motorworks",
+    "hours": "จันทร์-เสาร์ 09:00-18:30",
+    "notes": "มีศูนย์ตรวจสอบแบตเตอรี่ด้วย Insulation Tester และ Cell Balancer"
+  },
+  {
+    "id": "EV-004",
+    "province": "ชลบุรี",
+    "district": "ศรีราชา",
+    "name": "Sriracha Volt Garage",
+    "evTypes": [
+      "BYD",
+      "GAC AION",
+      "Changan"
+    ],
+    "services": [
+      "ระบบชาร์จ/OBC",
+      "ระบบปรับอากาศ (HVAC)",
+      "ตรวจเช็คทั่วไป (PM)"
+    ],
+    "contact": "คุณสมชาย",
+    "phone": "038-778-899",
+    "line": "@sriracha_volt",
+    "facebook": "https://facebook.com/srirachavolt",
+    "googleMaps": "https://maps.google.com/?q=Sriracha+Volt+Garage",
+    "hours": "จันทร์-เสาร์ 08:00-17:30",
+    "notes": "ใกล้นิคมอุตสาหกรรม รองรับรถองค์กร"
+  },
+  {
+    "id": "EV-005",
+    "province": "เชียงใหม่",
+    "district": "เมืองเชียงใหม่",
+    "name": "Lanna EV Clinic",
+    "evTypes": [
+      "MG",
+      "NETA",
+      "BYD",
+      "ทุกยี่ห้อ"
+    ],
+    "services": [
+      "แบตเตอรี่แรงดันสูง (HV Battery)",
+      "ช่วงล่าง/เบรก",
+      "ตรวจเช็คทั่วไป (PM)"
+    ],
+    "contact": "คุณพิมพ์ใจ",
+    "phone": "053-224-556",
+    "line": "@lannaevclinic",
+    "facebook": "https://facebook.com/lannaevclinic",
+    "googleMaps": "https://maps.google.com/?q=Lanna+EV+Clinic+Chiang+Mai",
+    "hours": "จันทร์-เสาร์ 09:00-18:00",
+    "notes": "ทีมช่างผ่านการอบรม HV Safety โดยตรงจากค่ายรถ"
+  },
+  {
+    "id": "EV-006",
+    "province": "ขอนแก่น",
+    "district": "เมืองขอนแก่น",
+    "name": "Isan EV Power",
+    "evTypes": [
+      "BYD",
+      "GAC AION"
+    ],
+    "services": [
+      "ระบบไฟฟ้า/ECU",
+      "ระบบชาร์จ/OBC",
+      "ตรวจเช็คทั่วไป (PM)"
+    ],
+    "contact": "คุณเอกชัย",
+    "phone": "043-556-778",
+    "line": "@isanevpower",
+    "facebook": "https://facebook.com/isanevpower",
+    "googleMaps": "https://maps.google.com/?q=Isan+EV+Power+Khon+Kaen",
+    "hours": "จันทร์-อาทิตย์ 08:30-18:00",
+    "notes": "รับงานฟลีทแท็กซี่ไฟฟ้าในพื้นที่"
+  },
+  {
+    "id": "EV-007",
+    "province": "ภูเก็ต",
+    "district": "เมืองภูเก็ต",
+    "name": "Phuket Green Motor",
+    "evTypes": [
+      "Tesla",
+      "BYD",
+      "MG",
+      "ORA"
+    ],
+    "services": [
+      "แบตเตอรี่แรงดันสูง (HV Battery)",
+      "ระบบปรับอากาศ (HVAC)",
+      "มอเตอร์/ระบบขับเคลื่อน"
+    ],
+    "contact": "คุณนภดล",
+    "phone": "076-334-556",
+    "line": "@phuketgreenmotor",
+    "facebook": "https://facebook.com/phuketgreenmotor",
+    "googleMaps": "https://maps.google.com/?q=Phuket+Green+Motor",
+    "hours": "ทุกวัน 09:00-19:00",
+    "notes": "รองรับนักท่องเที่ยวเช่ารถไฟฟ้า มีบริการรถลากฉุกเฉิน"
+  },
+  {
+    "id": "EV-008",
+    "province": "สงขลา",
+    "district": "หาดใหญ่",
+    "name": "Hatyai EV Solutions",
+    "evTypes": [
+      "NETA",
+      "BYD",
+      "Changan"
+    ],
+    "services": [
+      "ระบบไฟฟ้า/ECU",
+      "ช่วงล่าง/เบรก",
+      "ตรวจเช็คทั่วไป (PM)"
+    ],
+    "contact": "คุณอาทิตย์",
+    "phone": "074-223-445",
+    "line": "@hatyaiev",
+    "facebook": "https://facebook.com/hatyaievsolutions",
+    "googleMaps": "https://maps.google.com/?q=Hatyai+EV+Solutions",
+    "hours": "จันทร์-เสาร์ 08:30-17:30",
+    "notes": ""
+  },
+  {
+    "id": "EV-009",
+    "province": "นนทบุรี",
+    "district": "บางบัวทอง",
+    "name": "Bangbuathong EV Tech",
+    "evTypes": [
+      "MG",
+      "BYD",
+      "GAC AION",
+      "ทุกยี่ห้อ"
+    ],
+    "services": [
+      "แบตเตอรี่แรงดันสูง (HV Battery)",
+      "ระบบชาร์จ/OBC",
+      "ระบบปรับอากาศ (HVAC)"
+    ],
+    "contact": "คุณกิตติ",
+    "phone": "02-889-9001",
+    "line": "@bbtevtech",
+    "facebook": "https://facebook.com/bangbuathongevtech",
+    "googleMaps": "https://maps.google.com/?q=Bangbuathong+EV+Tech",
+    "hours": "จันทร์-เสาร์ 09:00-18:00",
+    "notes": "มีบริการรับ-ส่งรถในเขตนนทบุรี"
+  },
+  {
+    "id": "EV-010",
+    "province": "ปทุมธานี",
+    "district": "คลองหลวง",
+    "name": "Klongluang EV Garage",
+    "evTypes": [
+      "NETA",
+      "BYD"
+    ],
+    "services": [
+      "ตรวจเช็คทั่วไป (PM)",
+      "ช่วงล่าง/เบรก",
+      "ระบบไฟฟ้า/ECU"
+    ],
+    "contact": "คุณธนพล",
+    "phone": "02-902-3344",
+    "line": "@klongluangev",
+    "facebook": "https://facebook.com/klongluangevgarage",
+    "googleMaps": "https://maps.google.com/?q=Klongluang+EV+Garage",
+    "hours": "จันทร์-เสาร์ 08:00-17:00",
+    "notes": ""
+  },
+  {
+    "id": "EV-011",
+    "province": "สมุทรปราการ",
+    "district": "บางพลี",
+    "name": "Bangplee HV Battery Lab",
+    "evTypes": [
+      "BYD",
+      "MG",
+      "NETA",
+      "GAC AION",
+      "ทุกยี่ห้อ"
+    ],
+    "services": [
+      "แบตเตอรี่แรงดันสูง (HV Battery)",
+      "มอเตอร์/ระบบขับเคลื่อน"
+    ],
+    "contact": "คุณศิริพงษ์",
+    "phone": "02-778-4455",
+    "line": "@bangpleehvlab",
+    "facebook": "https://facebook.com/bangpleehvbatterylab",
+    "googleMaps": "https://maps.google.com/?q=Bangplee+HV+Battery+Lab",
+    "hours": "จันทร์-เสาร์ 09:00-18:00",
+    "notes": "ห้องแล็บเฉพาะทางวิเคราะห์และ Rebalance แบตเตอรี่"
+  },
+  {
+    "id": "EV-012",
+    "province": "อุดรธานี",
+    "district": "เมืองอุดรธานี",
+    "name": "Udon EV Point",
+    "evTypes": [
+      "BYD",
+      "Changan"
+    ],
+    "services": [
+      "ระบบชาร์จ/OBC",
+      "ตรวจเช็คทั่วไป (PM)"
+    ],
+    "contact": "คุณประวิทย์",
+    "phone": "042-112-334",
+    "line": "@udonevpoint",
+    "facebook": "https://facebook.com/udonevpoint",
+    "googleMaps": "https://maps.google.com/?q=Udon+EV+Point",
+    "hours": "จันทร์-เสาร์ 08:30-17:30",
+    "notes": ""
+  },
+  {
+    "id": "EV-013",
+    "province": "สุราษฎร์ธานี",
+    "district": "เมืองสุราษฎร์ธานี",
+    "name": "Surat EV Garage",
+    "evTypes": [
+      "MG",
+      "NETA",
+      "ทุกยี่ห้อ"
+    ],
+    "services": [
+      "ระบบปรับอากาศ (HVAC)",
+      "ช่วงล่าง/เบรก",
+      "ตรวจเช็คทั่วไป (PM)"
+    ],
+    "contact": "คุณจิรายุ",
+    "phone": "077-556-778",
+    "line": "@suratevgarage",
+    "facebook": "https://facebook.com/suratevgarage",
+    "googleMaps": "https://maps.google.com/?q=Surat+EV+Garage",
+    "hours": "จันทร์-อาทิตย์ 09:00-18:00",
+    "notes": ""
+  },
+  {
+    "id": "EV-014",
+    "province": "นครราชสีมา",
+    "district": "สีคิ้ว",
+    "name": "Sikhio EV Express",
+    "evTypes": [
+      "BYD",
+      "NETA",
+      "ทุกยี่ห้อ"
+    ],
+    "services": [
+      "ตรวจเช็คทั่วไป (PM)",
+      "ช่วงล่าง/เบรก"
+    ],
+    "contact": "คุณมานพ",
+    "phone": "085-667-889",
+    "line": "@sikhioevexpress",
+    "facebook": "",
+    "googleMaps": "https://maps.google.com/?q=Sikhio+EV+Express",
+    "hours": "จันทร์-เสาร์ 08:00-18:00",
+    "notes": "จุดพักรถระหว่างทางสาย มิตรภาพ"
+  }
+];
