@@ -15,7 +15,7 @@
     evType: "",
     service: "",
     activeChip: "",
-    sort: "name-asc",
+    sort: "id-asc",
   };
 
   // ---------- DOM refs ----------
@@ -329,6 +329,28 @@
     });
   }
 
+  // ---------- Sorting helpers ----------
+  // แยก id เช่น "EV-01", "EV-10", "PK-001" ออกเป็น prefix (ตัวอักษร) กับเลขลำดับ
+  // เพื่อเทียบแบบตัวเลขจริง (EV-2 ต้องมาก่อน EV-10) ไม่ใช่เทียบแบบ string ("EV-10" < "EV-2")
+  function idSortKey(id) {
+    const str = String(id ?? "").trim();
+    const match = str.match(/^(.*?)(\d+)\s*$/); // จับ prefix + เลขท้ายสุดของ id
+    if (match) {
+      return { prefix: match[1], num: parseInt(match[2], 10), raw: str };
+    }
+    return { prefix: str, num: Number.POSITIVE_INFINITY, raw: str };
+  }
+
+  function compareById(a, b) {
+    const av = idSortKey(a.id);
+    const bv = idSortKey(b.id);
+    return (
+      av.prefix.localeCompare(bv.prefix, "th") ||
+      av.num - bv.num ||
+      av.raw.localeCompare(bv.raw, "th")
+    );
+  }
+
   // ---------- Filtering + sorting ----------
   function getFilteredGarages() {
     const q = state.query.trim().toLowerCase();
@@ -356,6 +378,9 @@
     });
 
     list.sort((a, b) => {
+      if (state.sort === "id-asc") {
+        return compareById(a, b);
+      }
       if (state.sort === "province-asc") {
         return (a.province || "").localeCompare(b.province || "", "th") ||
           (a.name || "").localeCompare(b.name || "", "th");
@@ -957,13 +982,13 @@
   }
 
   function resetAll() {
-    state = { query: "", province: "", district: "", evType: "", service: "", activeChip: "", sort: "name-asc" };
+    state = { query: "", province: "", district: "", evType: "", service: "", activeChip: "", sort: "id-asc" };
     $searchInput.value = "";
     $provinceSelect.value = "";
     $districtSelect.value = "";
     $evTypeSelect.value = "";
     $serviceSelect.value = "";
-    $sortSelect.value = "name-asc";
+    $sortSelect.value = "id-asc";
     $quickChips.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
     render();
   }
